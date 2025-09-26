@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Designer</title>
+    <style>
+        :root { --bg: #fff; --panel: #f8f9fa; --text: #333; --border: #e9ecef; --accent: #007bff; }
+        @media (prefers-color-scheme: dark) { :root { --bg: #121212; --panel: #1e1e1e; --text: #e0e0e0; --border: #333; } }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+        #app { display: grid; grid-template-columns: 200px 1fr 250px; grid-template-rows: auto 1fr auto; height: 100vh; }
+        #tools-left { background: var(--panel); border-right: 1px solid var(--border); overflow-y: auto; padding: 1rem; }
+        #toolbar-top { background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; grid-column: 1 / -1; }
+        #canvas-center { background: #f0f0f0; position: relative; overflow: hidden; } /* Light gray for canvas bg */
+        #props-right { background: var(--panel); border-left: 1px solid var(--border); overflow-y: auto; padding: 1rem; }
+        #dock-bottom { background: var(--panel); border-top: 1px solid var(--border); display: flex; grid-column: 1 / -1; overflow-x: auto; } /* Layers/effects tabs here */
+        .tool-btn { background: none; border: 1px solid var(--border); padding: 0.5rem; cursor: pointer; margin-right: 0.25rem; }
+        .tool-btn:hover { background: var(--accent); color: white; }
+        .loading { text-align: center; padding: 2rem; }
+        /* PWA basics */
+        @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }
+    </style>
+    <script src="/assets/app.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <nav id="tools-left" class="loading">Tools Panel (Modules load here)</nav>
+        <header id="toolbar-top">
+            <div>Toolbar: Export, Undo, etc. (Modules add buttons)</div>
+            <button class="tool-btn" onclick="toggleTheme()">Theme</button>
+        </header>
+        <main id="canvas-center" class="loading">
+            <svg id="svg-canvas" width="100%" height="100%" viewBox="-100 -100 200 200" style="background: white;">
+                <!-- Infinite canvas starts here -->
+            </svg>
+        </main>
+        <aside id="props-right" class="loading">Properties (Dynamic per selection)</aside>
+        <footer id="dock-bottom">
+            <div class="loading">Layers & Effects Dock (Tree/tabs from modules)</div>
+        </footer>
+    </div>
+    <script>
+        // Inline theme toggle for demo
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>
