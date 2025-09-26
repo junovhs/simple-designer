@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Base UI Styles: Affinity-inspired (clean, icons via Unicode/SVG placeholders) */
+        .base-tool { display: block; margin: 1rem 0; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: none; cursor: pointer; text-align: center; }
+        .base-tool:hover { background: var(--accent); color: white; }
+        .base-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+        .base-group { margin: 1rem 0; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; }
+        .base-group h4 { margin: 0 0 0.5rem 0; font-size: 0.9rem; }
+        .base-slider { width: 100%; margin: 0.25rem 0; }
+        .base-input { width: 100%; padding: 0.25rem; border: 1px solid var(--border); border-radius: 2px; }
+        .base-layer { display: flex; align-items: center; padding: 0.25rem; border-bottom: 1px solid var(--border); }
+        .base-layer:last-child { border-bottom: none; }
+        .base-eye { margin-right: 0.5rem; cursor: pointer; }
+        .base-tab { padding: 0.5rem 1rem; background: none; border: none; cursor: pointer; margin-right: 0.25rem; }
+        .base-tab.active { background: var(--accent); color: white; border-radius: 4px; }
+        .base-badge { background: gold; color: black; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <!-- module: {"id": "base-ui", "slots": ["#tools-left", "#toolbar-top", "#props-right", "#dock-bottom"], "hooks": ["init"]} -->
+    <!-- Tools Left: Base Icons/Groups -->
+    <div id="base-tools-left">
+        <div class="base-group">
+            <h4>Selection</h4>
+            <button class="base-tool" title="Select (V)"><span class="base-icon">↖️</span>Select</button>
+        </div>
+        <div class="base-group">
+            <h4>Drawing</h4>
+            <button class="base-tool" title="Pen (P)"><span class="base-icon">✏️</span>Pen</button>
+            <button class="base-tool" title="Shapes"><span class="base-icon">⬜</span>Shapes</button>
+            <button class="base-tool" title="Text (T)"><span class="base-icon">T</span>Text</button>
+        </div>
+        <div class="base-group">
+            <h4>Effects</h4>
+            <button class="base-tool" title="Gradient"><span class="base-icon">↔️</span>Gradient</button>
+            <button class="base-tool" title="Transparency"><span class="base-icon">⟳</span>Trans</button>
+            <button class="base-tool" title="Shadow"><span class="base-icon">⬇️</span>Shadow</button>
+        </div>
+        <div class="base-group">
+            <h4>Align (A)</h4>
+            <button class="base-tool" title="Left Align"><span class="base-icon">⇐</span></button>
+            <button class="base-tool" title="Center H"><span class="base-icon">⟷</span></button>
+            <button class="base-tool" title="Right Align"><span class="base-icon">⇒</span></button>
+            <button class="base-tool" title="Top"><span class="base-icon">⇑</span></button>
+            <button class="base-tool" title="Center V"><span class="base-icon">⇕</span></button>
+            <button class="base-tool" title="Bottom"><span class="base-icon">⇓</span></button>
+        </div>
+    </div>
+
+    <!-- Toolbar Top: Base Buttons -->
+    <div id="base-toolbar-top" style="flex: 1; display: flex; justify-content: flex-end; gap: 0.5rem;">
+        <button class="base-tool" title="Artboard"><span class="base-icon">📐</span>Artboard</button>
+        <button class="base-tool" title="Undo (Ctrl+Z)"><span class="base-icon">↶</span></button>
+        <button class="base-tool" title="Redo (Ctrl+Y)"><span class="base-icon">↷</span></button>
+        <div class="base-badge" title="Base UI Active">Base Mode</div>
+    </div>
+
+    <!-- Props Right: Base Panels/Sliders -->
+    <div id="base-props-right">
+        <div class="base-group">
+            <h4>Transform</h4>
+            <label>X: <input class="base-input" type="number" value="10" placeholder="x"></label>
+            <label>Y: <input class="base-input" type="number" value="10" placeholder="y"></label>
+            <label>W: <input class="base-input" type="number" value="100" placeholder="width"></label>
+            <label>H: <input class="base-input" type="number" value="100" placeholder="height"></label>
+            <label>R: <input class="base-input" type="number" value="0" placeholder="rotate °"></label>
+            <label>S: <input class="base-input" type="number" value="0" placeholder="skew"></label>
+            <div style="margin-top: 0.5rem;">Ref Point: <button class="base-tool" style="padding:0.25rem;">↖</button>↖</div>
+        </div>
+        <div class="base-group">
+            <h4>Color (HSL)</h4>
+            <input class="base-slider" type="range" min="0" max="360" value="0"><label>H: 0°</label>
+            <input class="base-slider" type="range" min="0" max="100" value="100"><label>S: 100%</label>
+            <input class="base-slider" type="range" min="0" max="100" value="50"><label>L: 50%</label>
+            <div style="display: flex; gap: 0.25rem; margin-top: 0.5rem;">
+                <div style="width: 20px; height: 20px; background: hsl(0,100%,50%); border: 1px solid var(--border);"></div>
+                <input class="base-input" type="color" value="#ff0000">
+            </div>
+        </div>
+        <div class="base-group">
+            <h4>Typography</h4>
+            <select class="base-input"><option>Arial</option><option>Helvetica</option></select>
+            <input class="base-slider" type="range" min="-100" max="100" value="0"><label>Tracking: 0</label>
+            <input class="base-slider" type="range" min="-100" max="100" value="0"><label>Leading: 0</label>
+        </div>
+        <div class="base-group">
+            <h4>Effects</h4>
+            <label>Shadow Offset: <input class="base-input" type="number" value="5"></label>
+            <label>Blur: <input class="base-slider" type="range" min="0" max="20" value="3"></label>
+            <input class="base-input" type="color" value="#000000">
+        </div>
+    </div>
+
+    <!-- Dock Bottom: Base Layers/Effects Tabs -->
+    <div id="base-dock-bottom" style="flex: 1; display: flex; align-items: center; gap: 1rem;">
+        <div style="flex: 1;">
+            <button class="base-tab active">Layers</button>
+            <button class="base-tab">Effects</button>
+        </div>
+        <div style="flex: 3; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; max-height: 200px; overflow-y: auto;">
+            <h4>Layers (Base Tree)</h4>
+            <div class="base-layer">
+                <span class="base-eye" title="Visible">👁</span>
+                <span style="flex: 1;">Background Image</span>
+                <span style="width: 50px; text-align: right;">Layer 1</span>
+            </div>
+            <div class="base-layer">
+                <span class="base-eye" title="Hidden">🙈</span>
+                <span style="flex: 1;">Text Overlay</span>
+                <span style="width: 50px; text-align: right;">Layer 2</span>
+            </div>
+            <div class="base-layer">
+                <span class="base-eye" title="Locked">🔒</span>
+                <span style="flex: 1;">Shape Group</span>
+                <span style="width: 50px; text-align: right;">Layer 3</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Base UI Module: Just appends static fragments (no logic)
+        window.baseUi = {
+            init: function({ bus, store }) {
+                // Emit ready for bus
+                bus.emit('baseUiLoaded');
+                console.log('Base UI skeleton initialized - panels populated');
+            }
+        };
+    </script>
+</body>
+</html>
