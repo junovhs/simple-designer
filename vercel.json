@@ -1,7 +1,12 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/pages/(.*)", "destination": "/pages/$1" },
-    { "source": "/assets/(.*)", "destination": "/assets/$1" }
-  ]
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/pages/:path*", "destination": "/pages/:path*" },
+    { "source": "/assets/:path*", "destination": "/assets/:path*" }
+  ],
+  "functions": {
+    "api/nav.js": {
+      "maxDuration": 10
+    }
+  }
 }
