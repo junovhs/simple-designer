@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Designer</title>
     <style>
-        /* Paste the full <style> from your code here - all vars, .tool-btn, .property-row, etc. */
         * {
             margin: 0;
             padding: 0;
@@ -63,7 +65,17 @@
             height: 100vh;
         }
 
-        /* [Paste all the rest of your CSS here - .menu-item, .tool-option-group, .tool-btn, .grid-lines, .property-row, .slider, etc. - up to ::-webkit-scrollbar] */
+        /* Menu Bar */
+        #menu-bar {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding: 0 10px;
+        }
+
         .menu-item {
             padding: 4px 12px;
             color: var(--text-primary);
@@ -74,6 +86,19 @@
 
         .menu-item:hover {
             background: var(--menu-hover);
+        }
+
+        /* Tool Options Bar */
+        #tool-options {
+            grid-column: 2 / 4;
+            grid-row: 2;
+            background: var(--bg-panel);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-bottom: 1px solid var(--border);
+            gap: 15px;
+            overflow-x: auto;
         }
 
         .tool-option-group {
@@ -131,6 +156,17 @@
             cursor: default;
         }
 
+        /* Tools Sidebar */
+        #tools-sidebar {
+            grid-column: 1;
+            grid-row: 2 / 4;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 4px;
+        }
+
         .tool-btn {
             width: 40px;
             height: 40px;
@@ -162,6 +198,7 @@
             margin: 4px 8px;
         }
 
+        /* Canvas Area */
         #canvas-container {
             grid-column: 2;
             grid-row: 3;
@@ -251,6 +288,7 @@
             stroke-width: 2;
         }
 
+        /* Right Panel */
         #right-panel {
             grid-column: 3;
             grid-row: 3;
@@ -260,6 +298,7 @@
             flex-direction: column;
         }
 
+        /* Studio Tabs (Color/Typography/Effects) */
         .studio-tabs {
             display: flex;
             background: var(--bg-secondary);
@@ -297,6 +336,7 @@
             border-bottom: 1px solid var(--border);
         }
 
+        /* Layers Section */
         .layers-section {
             flex: 1;
             display: flex;
@@ -359,6 +399,7 @@
             color: var(--text-secondary);
         }
 
+        /* Bottom Tabs (Transform/History) */
         .bottom-panel {
             height: 180px;
             display: flex;
@@ -398,6 +439,7 @@
             overflow-y: auto;
         }
 
+        /* Property Controls */
         .property-row {
             display: flex;
             align-items: center;
@@ -453,7 +495,8 @@
             cursor: pointer;
         }
 
-        .status-bar {
+        /* Status Bar */
+        #status-bar {
             grid-column: 1 / 4;
             grid-row: 4;
             background: var(--bg-secondary);
@@ -473,6 +516,7 @@
             margin-left: auto;
         }
 
+        /* History Items */
         .history-item {
             padding: 4px 8px;
             background: var(--bg-tertiary);
@@ -482,6 +526,7 @@
             color: var(--text-secondary);
         }
 
+        /* Transform Grid */
         .transform-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -511,6 +556,7 @@
             background: var(--accent);
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -531,317 +577,310 @@
     </style>
 </head>
 <body>
-    <!-- Tools Left Fragment -->
-    <div id="base-tools-left">
-        <button class="tool-btn active" title="Move Tool">↖</button>
-        <button class="tool-btn" title="View Tool">👁</button>
-        <div class="tool-separator"></div>
-        <button class="tool-btn" title="Rectangle">▭</button>
-        <button class="tool-btn" title="Ellipse">○</button>
-        <button class="tool-btn" title="Rounded Rectangle">▢</button>
-        <button class="tool-btn" title="Triangle">△</button>
-        <div class="tool-separator"></div>
-        <button class="tool-btn" title="Pen Tool">✒</button>
-        <button class="tool-btn" title="Node Tool">◆</button>
-        <button class="tool-btn" title="Corner Tool">∟</button>
-        <div class="tool-separator"></div>
-        <button class="tool-btn" title="Text Tool">T</button>
-        <button class="tool-btn" title="Artistic Text">A</button>
-        <div class="tool-separator"></div>
-        <button class="tool-btn" title="Fill Tool">🪣</button>
-        <button class="tool-btn" title="Gradient Tool">▥</button>
-        <button class="tool-btn" title="Transparency Tool">◐</button>
-        <div class="tool-separator"></div>
-        <button class="tool-btn" title="Zoom Tool">🔍</button>
-    </div>
+    <div id="app">
+        <!-- Menu Bar -->
+        <div id="menu-bar">
+            <span class="menu-item">File</span>
+            <span class="menu-item">Edit</span>
+            <span class="menu-item">Text</span>
+            <span class="menu-item">Layer</span>
+            <span class="menu-item">Select</span>
+            <span class="menu-item">Filters</span>
+            <span class="menu-item">View</span>
+            <span class="menu-item">Window</span>
+            <span class="menu-item">Help</span>
+        </div>
 
-    <!-- Toolbar Top Fragment (Tool Options) -->
-    <div id="base-toolbar-top" style="grid-column: 2 / 4; grid-row: 2; background: var(--bg-panel); display: flex; align-items: center; padding: 0 10px; border-bottom: 1px solid var(--border); gap: 15px; overflow-x: auto;">
-        <div class="tool-option-group">
-            <button class="tool-option-btn" title="Align Left">⊣</button>
-            <button class="tool-option-btn" title="Align Center">≡</button>
-            <button class="tool-option-btn" title="Align Right">⊢</button>
-            <div class="tool-option-separator"></div>
-            <button class="tool-option-btn" title="Align Top">⊤</button>
-            <button class="tool-option-btn" title="Align Middle">≡</button>
-            <button class="tool-option-btn" title="Align Bottom">⊥</button>
-        </div>
-        <div class="tool-option-group">
-            <button class="tool-option-btn" title="Distribute Horizontal">⫯</button>
-            <button class="tool-option-btn" title="Distribute Vertical">⫿</button>
-            <div class="tool-option-separator"></div>
-            <button class="tool-option-btn" title="Space Horizontal">≣</button>
-            <button class="tool-option-btn" title="Space Vertical">⫯</button>
-        </div>
-        <div class="tool-option-group">
-            <button class="tool-option-btn" title="Boolean Add">⊕</button>
-            <button class="tool-option-btn" title="Boolean Subtract">⊖</button>
-            <button class="tool-option-btn" title="Boolean Intersect">⊗</button>
-            <button class="tool-option-btn" title="Boolean XOR">⊻</button>
-            <button class="tool-option-btn" title="Divide">⫽</button>
-        </div>
-        <div class="tool-option-group">
-            <button class="tool-option-btn active" title="Snap to Grid">⊞</button>
-            <button class="tool-option-btn" title="Snap to Guides">|</button>
-            <button class="tool-option-btn" title="Snap to Objects">◈</button>
-            <div class="tool-option-separator"></div>
-            <button class="tool-option-btn active" title="Show Grid">#</button>
-            <button class="tool-option-btn" title="Show Guides">‖</button>
-            <button class="tool-option-btn" title="Lock Guides">🔒</button>
-        </div>
-        <div class="tool-option-group">
-            <select class="tool-option-dropdown">
-                <option>Pixel Alignment</option>
-                <option>Force Pixel Align</option>
-                <option>Move by Whole Pixels</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Canvas Fragment (Rulers + SVG) -->
-    <div id="base-canvas-container">
-        <div id="ruler-corner"></div>
-        <div id="ruler-horizontal">
-            <span class="ruler-mark">0</span>
-            <span class="ruler-mark">100</span>
-            <span class="ruler-mark">200</span>
-            <span class="ruler-mark">300</span>
-            <span class="ruler-mark">400</span>
-            <span class="ruler-mark">500</span>
-        </div>
-        <div id="ruler-vertical">
-            <span class="ruler-mark">0</span>
-            <span class="ruler-mark">100</span>
-            <span class="ruler-mark">200</span>
-            <span class="ruler-mark">300</span>
-        </div>
-        <div id="canvas">
-            <svg id="svg-canvas" viewBox="0 0 800 600">
-                <defs>
-                    <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <path d="M 10 0 L 0 0 0 10" fill="none" class="grid-lines" stroke-width="0.5"/>
-                    </pattern>
-                    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                        <rect width="100" height="100" fill="url(#smallGrid)"/>
-                        <path d="M 100 0 L 0 0 0 100" fill="none" class="grid-lines major" stroke-width="1"/>
-                    </pattern>
-                </defs>
-                
-                <rect width="100%" height="100%" fill="url(#grid)" />
-                
-                <!-- Demo shapes -->
-                <rect x="150" y="100" width="200" height="150" class="demo-shape" />
-                <circle cx="500" cy="200" r="80" class="demo-shape" />
-                <path d="M 100 400 L 200 350 L 300 400 L 250 500 L 150 500 Z" class="demo-shape" />
-            </svg>
-        </div>
-    </div>
-
-    <!-- Right Panel Fragment (Studios + Layers + Bottom) -->
-    <div id="base-right-panel">
-        <!-- Studio Tabs -->
-        <div class="studio-tabs">
-            <div class="studio-tab active">Colour</div>
-            <div class="studio-tab">Swatches</div>
-            <div class="studio-tab">Stroke</div>
-            <div class="studio-tab">Brushes</div>
-            <div class="studio-tab">Layers</div>
-            <div class="studio-tab">Effects</div>
-            <div class="studio-tab">Styles</div>
-            <div class="studio-tab">Text</div>
-            <div class="studio-tab">Character</div>
-            <div class="studio-tab">Paragraph</div>
-        </div>
-        <div class="studio-content">
-            <div class="property-row">
-                <div class="color-well"></div>
-                <div style="flex: 1;">
-                    <div class="property-row">
-                        <span class="property-label">H</span>
-                        <input type="range" class="slider" min="0" max="360" value="210">
-                        <input type="number" class="property-input-small" value="210">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">S</span>
-                        <input type="range" class="slider" min="0" max="100" value="100">
-                        <input type="number" class="property-input-small" value="100">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">L</span>
-                        <input type="range" class="slider" min="0" max="100" value="50">
-                        <input type="number" class="property-input-small" value="50">
-                    </div>
-                </div>
+        <!-- Tool Options Bar -->
+        <div id="tool-options">
+            <div class="tool-option-group">
+                <button class="tool-option-btn" title="Align Left">⊣</button>
+                <button class="tool-option-btn" title="Align Center">≡</button>
+                <button class="tool-option-btn" title="Align Right">⊢</button>
+                <div class="tool-option-separator"></div>
+                <button class="tool-option-btn" title="Align Top">⊤</button>
+                <button class="tool-option-btn" title="Align Middle">≡</button>
+                <button class="tool-option-btn" title="Align Bottom">⊥</button>
             </div>
-            <div class="property-row">
-                <span class="property-label">Opacity</span>
-                <input type="range" class="slider" min="0" max="100" value="100">
-                <input type="number" class="property-input-small" value="100">
+            <div class="tool-option-group">
+                <button class="tool-option-btn" title="Distribute Horizontal">⫯</button>
+                <button class="tool-option-btn" title="Distribute Vertical">⫿</button>
+                <div class="tool-option-separator"></div>
+                <button class="tool-option-btn" title="Space Horizontal">≣</button>
+                <button class="tool-option-btn" title="Space Vertical">⫯</button>
             </div>
-            <div class="property-row" style="margin-top: 10px;">
-                <select class="property-input">
-                    <option>RGB</option>
-                    <option selected>HSL</option>
-                    <option>CMYK</option>
-                    <option>LAB</option>
-                </select>
-                <select class="property-input">
-                    <option>Fill</option>
-                    <option>Stroke</option>
+            <div class="tool-option-group">
+                <button class="tool-option-btn" title="Boolean Add">⊕</button>
+                <button class="tool-option-btn" title="Boolean Subtract">⊖</button>
+                <button class="tool-option-btn" title="Boolean Intersect">⊗</button>
+                <button class="tool-option-btn" title="Boolean XOR">⊻</button>
+                <button class="tool-option-btn" title="Divide">⫽</button>
+            </div>
+            <div class="tool-option-group">
+                <button class="tool-option-btn active" title="Snap to Grid">⊞</button>
+                <button class="tool-option-btn" title="Snap to Guides">|</button>
+                <button class="tool-option-btn" title="Snap to Objects">◈</button>
+                <div class="tool-option-separator"></div>
+                <button class="tool-option-btn active" title="Show Grid">#</button>
+                <button class="tool-option-btn" title="Show Guides">‖</button>
+                <button class="tool-option-btn" title="Lock Guides">🔒</button>
+            </div>
+            <div class="tool-option-group">
+                <select class="tool-option-dropdown">
+                    <option>Pixel Alignment</option>
+                    <option>Force Pixel Align</option>
+                    <option>Move by Whole Pixels</option>
                 </select>
             </div>
         </div>
 
-        <!-- Layers Section -->
-        <div class="layers-section">
-            <div class="layers-header">Layers</div>
-            <div class="layers-list">
-                <div class="layer-item">
-                    <span class="layer-visibility">👁</span>
-                    <span class="layer-name">(Curves) Adjustment</span>
-                    <span class="layer-lock"></span>
+        <!-- Tools Sidebar -->
+        <div id="tools-sidebar">
+            <button class="tool-btn active" title="Move Tool">↖</button>
+            <button class="tool-btn" title="View Tool">👁</button>
+            <div class="tool-separator"></div>
+            <button class="tool-btn" title="Rectangle">▭</button>
+            <button class="tool-btn" title="Ellipse">○</button>
+            <button class="tool-btn" title="Rounded Rectangle">▢</button>
+            <button class="tool-btn" title="Triangle">△</button>
+            <div class="tool-separator"></div>
+            <button class="tool-btn" title="Pen Tool">✒</button>
+            <button class="tool-btn" title="Node Tool">◆</button>
+            <button class="tool-btn" title="Corner Tool">∟</button>
+            <div class="tool-separator"></div>
+            <button class="tool-btn" title="Text Tool">T</button>
+            <button class="tool-btn" title="Artistic Text">A</button>
+            <div class="tool-separator"></div>
+            <button class="tool-btn" title="Fill Tool">🪣</button>
+            <button class="tool-btn" title="Gradient Tool">▥</button>
+            <button class="tool-btn" title="Transparency Tool">◐</button>
+            <div class="tool-separator"></div>
+            <button class="tool-btn" title="Zoom Tool">🔍</button>
+        </div>
+
+        <!-- Canvas Container -->
+        <div id="canvas-container">
+            <div id="ruler-corner"></div>
+            <div id="ruler-horizontal">
+                <span class="ruler-mark">0</span>
+                <span class="ruler-mark">100</span>
+                <span class="ruler-mark">200</span>
+                <span class="ruler-mark">300</span>
+                <span class="ruler-mark">400</span>
+                <span class="ruler-mark">500</span>
+            </div>
+            <div id="ruler-vertical">
+                <span class="ruler-mark">0</span>
+                <span class="ruler-mark">100</span>
+                <span class="ruler-mark">200</span>
+                <span class="ruler-mark">300</span>
+            </div>
+            <div id="canvas">
+                <svg id="svg-canvas" viewBox="0 0 800 600">
+                    <defs>
+                        <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <path d="M 10 0 L 0 0 0 10" fill="none" class="grid-lines" stroke-width="0.5"/>
+                        </pattern>
+                        <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <rect width="100" height="100" fill="url(#smallGrid)"/>
+                            <path d="M 100 0 L 0 0 0 100" fill="none" class="grid-lines major" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    <!-- Demo shapes -->
+                    <rect x="150" y="100" width="200" height="150" class="demo-shape" />
+                    <circle cx="500" cy="200" r="80" class="demo-shape" />
+                    <path d="M 100 400 L 200 350 L 300 400 L 250 500 L 150 500 Z" class="demo-shape" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div id="right-panel">
+            <!-- Studio Tabs -->
+            <div class="studio-tabs">
+                <div class="studio-tab active">Colour</div>
+                <div class="studio-tab">Swatches</div>
+                <div class="studio-tab">Stroke</div>
+                <div class="studio-tab">Brushes</div>
+                <div class="studio-tab">Layers</div>
+                <div class="studio-tab">Effects</div>
+                <div class="studio-tab">Styles</div>
+                <div class="studio-tab">Text</div>
+                <div class="studio-tab">Character</div>
+                <div class="studio-tab">Paragraph</div>
+            </div>
+            <div class="studio-content">
+                <div class="property-row">
+                    <div class="color-well"></div>
+                    <div style="flex: 1;">
+                        <div class="property-row">
+                            <span class="property-label">H</span>
+                            <input type="range" class="slider" min="0" max="360" value="210">
+                            <input type="number" class="property-input-small" value="210">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">S</span>
+                            <input type="range" class="slider" min="0" max="100" value="100">
+                            <input type="number" class="property-input-small" value="100">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">L</span>
+                            <input type="range" class="slider" min="0" max="100" value="50">
+                            <input type="number" class="property-input-small" value="50">
+                        </div>
+                    </div>
                 </div>
-                <div class="layer-item">
-                    <span class="layer-visibility">👁</span>
-                    <span class="layer-name">Star Shape</span>
-                    <span class="layer-lock">🔒</span>
+                <div class="property-row">
+                    <span class="property-label">Opacity</span>
+                    <input type="range" class="slider" min="0" max="100" value="100">
+                    <input type="number" class="property-input-small" value="100">
                 </div>
-                <div class="layer-item">
-                    <span class="layer-visibility">👁</span>
-                    <span class="layer-name">Circle</span>
-                    <span class="layer-lock"></span>
+                <div class="property-row" style="margin-top: 10px;">
+                    <select class="property-input">
+                        <option>RGB</option>
+                        <option selected>HSL</option>
+                        <option>CMYK</option>
+                        <option>LAB</option>
+                    </select>
+                    <select class="property-input">
+                        <option>Fill</option>
+                        <option>Stroke</option>
+                    </select>
                 </div>
-                <div class="layer-item">
-                    <span class="layer-visibility">👁</span>
-                    <span class="layer-name">Rectangle</span>
-                    <span class="layer-lock"></span>
+            </div>
+
+            <!-- Layers Section -->
+            <div class="layers-section">
+                <div class="layers-header">Layers</div>
+                <div class="layers-list">
+                    <div class="layer-item">
+                        <span class="layer-visibility">👁</span>
+                        <span class="layer-name">(Curves) Adjustment</span>
+                        <span class="layer-lock"></span>
+                    </div>
+                    <div class="layer-item">
+                        <span class="layer-visibility">👁</span>
+                        <span class="layer-name">Star Shape</span>
+                        <span class="layer-lock">🔒</span>
+                    </div>
+                    <div class="layer-item">
+                        <span class="layer-visibility">👁</span>
+                        <span class="layer-name">Circle</span>
+                        <span class="layer-lock"></span>
+                    </div>
+                    <div class="layer-item">
+                        <span class="layer-visibility">👁</span>
+                        <span class="layer-name">Rectangle</span>
+                        <span class="layer-lock"></span>
+                    </div>
+                    <div class="layer-item">
+                        <span class="layer-visibility"></span>
+                        <span class="layer-name">Background</span>
+                        <span class="layer-lock">🔒</span>
+                    </div>
                 </div>
-                <div class="layer-item">
-                    <span class="layer-visibility"></span>
-                    <span class="layer-name">Background</span>
-                    <span class="layer-lock">🔒</span>
+            </div>
+
+            <!-- Bottom Panel -->
+            <div class="bottom-panel">
+                <div class="bottom-tabs">
+                    <div class="bottom-tab active">Transform</div>
+                    <div class="bottom-tab">History</div>
+                    <div class="bottom-tab">Navigator</div>
+                </div>
+                <div class="bottom-content">
+                    <div class="transform-grid">
+                        <div class="property-row">
+                            <span class="property-label">X</span>
+                            <input type="number" class="property-input" value="150.0">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">Y</span>
+                            <input type="number" class="property-input" value="100.0">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">W</span>
+                            <input type="number" class="property-input" value="200.0">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">H</span>
+                            <input type="number" class="property-input" value="150.0">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">Rotation</span>
+                            <input type="number" class="property-input" value="0.0">
+                        </div>
+                        <div class="property-row">
+                            <span class="property-label">Skew</span>
+                            <input type="number" class="property-input" value="0.0">
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span class="property-label">Anchor Point</span>
+                        <div class="anchor-grid">
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point active"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                            <div class="anchor-point"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Panel -->
-        <div class="bottom-panel">
-            <div class="bottom-tabs">
-                <div class="bottom-tab active">Transform</div>
-                <div class="bottom-tab">History</div>
-                <div class="bottom-tab">Navigator</div>
-            </div>
-            <div class="bottom-content">
-                <div class="transform-grid">
-                    <div class="property-row">
-                        <span class="property-label">X</span>
-                        <input type="number" class="property-input" value="150.0">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">Y</span>
-                        <input type="number" class="property-input" value="100.0">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">W</span>
-                        <input type="number" class="property-input" value="200.0">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">H</span>
-                        <input type="number" class="property-input" value="150.0">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">Rotation</span>
-                        <input type="number" class="property-input" value="0.0">
-                    </div>
-                    <div class="property-row">
-                        <span class="property-label">Skew</span>
-                        <input type="number" class="property-input" value="0.0">
-                    </div>
-                </div>
-                <div style="margin-top: 10px;">
-                    <span class="property-label">Anchor Point</span>
-                    <div class="anchor-grid">
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point active"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                        <div class="anchor-point"></div>
-                    </div>
-                </div>
-            </div>
+        <!-- Status Bar -->
+        <div id="status-bar">
+            <span class="status-item">Ready</span>
+            <span class="status-item">3 objects selected</span>
+            <span class="status-item">X: 150.0 Y: 100.0</span>
+            <span class="status-zoom">100%</span>
         </div>
-    </div>
-
-    <!-- Status Bar Fragment -->
-    <div id="base-status-bar" style="grid-column: 1 / 4; grid-row: 4; background: var(--bg-secondary); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 10px; font-size: 10px; color: var(--text-secondary);">
-        <span class="status-item">Ready</span>
-        <span class="status-item">3 objects selected</span>
-        <span class="status-item">X: 150.0 Y: 100.0</span>
-        <span class="status-zoom">100%</span>
-    </div>
-
-    <!-- Menu Bar Fragment -->
-    <div id="base-menu-bar" style="grid-column: 1 / 4; grid-row: 1; background: var(--bg-secondary); display: flex; align-items: center; border-bottom: 1px solid var(--border); padding: 0 10px;">
-        <span class="menu-item">File</span>
-        <span class="menu-item">Edit</span>
-        <span class="menu-item">Text</span>
-        <span class="menu-item">Layer</span>
-        <span class="menu-item">Select</span>
-        <span class="menu-item">Filters</span>
-        <span class="menu-item">View</span>
-        <span class="menu-item">Window</span>
-        <span class="menu-item">Help</span>
     </div>
 
     <script>
-        // Base UI Module: Appends fragments, adds static tab switching/theme
-        window.baseUi = {
-            init: function({ bus, store }) {
-                // Static tab switching (visual only)
-                document.querySelectorAll('.studio-tab').forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        document.querySelectorAll('.studio-tab').forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                    });
-                });
-
-                document.querySelectorAll('.bottom-tab').forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        document.querySelectorAll('.bottom-tab').forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Mock content switch for History tab
-                        const content = document.querySelector('.bottom-content');
-                        if (this.textContent === 'History') {
-                            content.innerHTML = `
-                                <div class="history-item">Create Rectangle</div>
-                                <div class="history-item">Create Circle</div>
-                                <div class="history-item">Create Star</div>
-                                <div class="history-item">Apply Adjustment</div>
-                                <div class="history-item">Lock Layer</div>
-                            `;
-                        } else {
-                            // Default Transform content (already there)
-                        }
-                    });
-                });
-
-                // Theme toggle (Ctrl+T)
-                document.addEventListener('keydown', e => {
-                    if (e.key === 't' && (e.ctrlKey || e.metaKey)) {
-                        e.preventDefault();
-                        document.body.classList.toggle('light');
-                    }
-                });
-
-                bus.emit('baseUiLoaded');
-                console.log('Base UI integrated - cockpit populated');
+        // Theme toggle
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 't' && e.ctrlKey) {
+                document.body.classList.toggle('light');
             }
-        };
+        });
+
+        // Tab switching (visual only)
+        document.querySelectorAll('.studio-tabs .studio-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.studio-tabs .studio-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.bottom-tabs .bottom-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.bottom-tabs .bottom-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update content (mock)
+                const content = document.querySelector('.bottom-content');
+                if (this.textContent === 'History') {
+                    content.innerHTML = `
+                        <div class="history-item">Create Rectangle</div>
+                        <div class="history-item">Create Circle</div>
+                        <div class="history-item">Create Star</div>
+                        <div class="history-item">Apply Adjustment</div>
+                        <div class="history-item">Lock Layer</div>
+                    `;
+                }
+            });
+        });
+
+        console.log('Simple Designer UI - Affinity Layout (Static Mock)');
     </script>
 </body>
 </html>
