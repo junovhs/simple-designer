@@ -1,0 +1,43 @@
+# Rust
+rust-core/target/
+rust-core/pkg/
+rust-core/Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Node
+web-frontend/node_modules/
+web-frontend/dist/
+web-frontend/.vite/
+web-frontend/package-lock.json
+
+# Build artifacts
+*.wasm
+*.js.map
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+.nyc_output/
