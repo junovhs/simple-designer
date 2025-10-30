@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Designer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="main.js" defer></script>
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- Canvas container -->
+      <div id="canvas-container" class="canvas-container">
+        <canvas id="main-canvas"></canvas>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button id="btn-select">Select</button>
+        <button id="btn-rect">Rectangle</button>
+        <button id="btn-zoom-in">Zoom In</button>
+        <button id="btn-zoom-out">Zoom Out</button>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <span id="status-text">Ready</span>
+        <span id="zoom-level">100%</span>
+      </div>
+    </div>
+  </body>
+</html>
