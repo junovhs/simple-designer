@@ -5,15 +5,19 @@
 #![deny(clippy::all)]
 
 mod types;
+mod viewport;
+mod spatial_index;
 
 use wasm_bindgen::prelude::*;
 
 pub use types::{Color, Point, Rect, TypeError};
+pub use viewport::{Viewport, ViewportError};
+pub use spatial_index::{SpatialIndex, SpatialObject, ObjectId, IndexError};
 
 /// Initialize WASM module.
 #[wasm_bindgen(start)]
 pub fn init() {
-    // MANDATE: Simple approach - no panic hook dependency yet
+    // MANDATE: Simple approach
     web_sys::console::log_1(&"WASM initialized".into());
 }
 

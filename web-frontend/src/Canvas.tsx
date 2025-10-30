@@ -1,25 +1,39 @@
-// MANDATE: Canvas component with instanced rendering test
+// MANDATE: Canvas with viewport controls - DEBUG VERSION
 import { useEffect, useRef, useState } from 'react';
 import { initWebGL, clearCanvas } from './webgl';
-import { createInstancedShader } from './webgl/shaders';
-import { createQuadGeometry } from './webgl/geometry';
+import { createInstancedShader, type ShaderProgram } from './webgl/shaders';
+import { createQuadGeometry, type QuadGeometry } from './webgl/geometry';
 import {
   createInstanceBuffer,
   updateInstances,
   drawInstanced,
   MAX_INSTANCES,
+  type InstanceData,
 } from './webgl/instanced';
+import {
+  createViewport,
+  handleMouseDown,
+  handleMouseMove,
+  handleMouseUp,
+  handleWheel,
+  type ViewportState,
+} from './canvas/viewport';
 
 /**
- * Three-layer canvas with instanced rendering test.
+ * Canvas with viewport pan/zoom.
  */
 export default function Canvas(): JSX.Element {
   const contentRef = useRef<HTMLCanvasElement>(null);
+  const glRef = useRef<WebGLRenderingContext | null>(null);
+  const shaderRef = useRef<ShaderProgram | null>(null);
+  const quadRef = useRef<QuadGeometry | null>(null);
+  const instanceRef = useRef<InstanceData | null>(null);
   
   const [error, setError] = useState<string | null>(null);
-  const [instanceCount, setInstanceCount] = useState(100);
+  const [instanceCount, setInstanceCount] = useState(1000);
+  const [viewport, setViewport] = useState<ViewportState>(createViewport());
 
-  // Initialize WebGL and render test rectangles
+  // Initialize WebGL ONCE
   useEffect(() => {
     const canvas = contentRef.current;
     if (!canvas) {
@@ -33,51 +47,121 @@ export default function Canvas(): JSX.Element {
       return;
     }
 
-    // Create shader
     const shader = createInstancedShader(gl);
     if (!shader) {
       setError('Shader creation failed');
       return;
     }
 
-    // Create geometry
     const quad = createQuadGeometry(gl);
     if (!quad) {
       setError('Quad creation failed');
       return;
     }
 
-    // Create instance buffer
     const instanceData = createInstanceBuffer(gl);
     if (!instanceData) {
       setError('Instance buffer creation failed');
       return;
     }
 
-    // Generate test rectangles
-    // MANDATE: Bounded count
-    const count = Math.min(instanceCount, MAX_INSTANCES);
-    const matrices = generateTestMatrices(count, canvas.width, canvas.height);
-    
-    if (!updateInstances(gl, instanceData, matrices)) {
-      setError('Failed to update instances');
+    // Store in refs
+    glRef.current = gl;
+    shaderRef.current = shader;
+    quadRef.current = quad;
+    instanceRef.current = instanceData;
+
+    console.log('WebGL initialized once');
+
+    return () => {
+      gl.deleteProgram(shader.program);
+      glRef.current = null;
+      shaderRef.current = null;
+      quadRef.current = null;
+      instanceRef.current = null;
+    };
+  }, []); // ONLY RUN ONCE
+
+  // Render when viewport or instanceCount changes
+  useEffect(() => {
+    const gl = glRef.current;
+    const shader = shaderRef.current;
+    const quad = quadRef.current;
+    const instanceData = instanceRef.current;
+
+    if (!gl || !shader || !quad || !instanceData) {
       return;
     }
 
-    // Clear and draw
+    const count = Math.min(instanceCount, MAX_INSTANCES);
+    const matrices = generateTestMatrices(count, viewport);
+    
+    console.log('RENDER', {
+      offsetX: viewport.offsetX.toFixed(3),
+      offsetY: viewport.offsetY.toFixed(3),
+      zoom: viewport.zoom.toFixed(3),
+      firstRect: {
+        scaleX: matrices[0].toFixed(3),
+        scaleY: matrices[4].toFixed(3),
+        posX: matrices[2].toFixed(3),
+        posY: matrices[5].toFixed(3),
+      },
+      lastRect: {
+        scaleX: matrices[(count-1)*9 + 0].toFixed(3),
+        scaleY: matrices[(count-1)*9 + 4].toFixed(3),
+        posX: matrices[(count-1)*9 + 2].toFixed(3),
+        posY: matrices[(count-1)*9 + 5].toFixed(3),
+      },
+    });
+    
+    const uploadSuccess = updateInstances(gl, instanceData, matrices);
+    console.log('GPU upload:', uploadSuccess);
+    
+    if (!uploadSuccess) {
+      return;
+    }
+
     clearCanvas(gl, 0.95, 0.95, 0.95);
     drawInstanced(gl, shader, quad, instanceData, [0.2, 0.4, 0.8, 1.0]);
+  }, [instanceCount, viewport]);
 
-    console.log('Rendered instances', { count });
+  // Native wheel event (not React's - passive issue)
+  useEffect(() => {
+    const canvas = contentRef.current;
+    if (!canvas) return;
 
-    // Cleanup on unmount
-    return () => {
-      gl.deleteProgram(shader.program);
-      // Note: quad and instance buffers deleted automatically
+    const handleWheelNative = (e: WheelEvent) => {
+      e.preventDefault();
+      
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      setViewport((vp) =>
+        handleWheel(vp, e.deltaY, canvas.width, canvas.height, mouseX, mouseY)
+      );
     };
-  }, [instanceCount]);
 
-  // MANDATE: Error handling visible
+    canvas.addEventListener('wheel', handleWheelNative, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('wheel', handleWheelNative);
+    };
+  }, []);
+
+  // Mouse event handlers
+  const onMouseDown = (e: React.MouseEvent) => {
+    setViewport((vp) => handleMouseDown(vp, e.clientX, e.clientY));
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    setViewport((vp) => handleMouseMove(vp, e.clientX, e.clientY));
+  };
+
+  const onMouseUp = () => {
+    setViewport((vp) => handleMouseUp(vp));
+  };
+
   if (error) {
     return (
       <div style={styles.error}>
@@ -89,12 +173,15 @@ export default function Canvas(): JSX.Element {
 
   return (
     <div style={styles.container}>
-      {/* Content layer (WebGL) */}
       <canvas
         ref={contentRef}
         width={800}
         height={600}
         style={styles.canvas}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
       />
       
       <div style={styles.controls}>
@@ -110,65 +197,74 @@ export default function Canvas(): JSX.Element {
             style={styles.slider}
           />
         </label>
+        <div style={styles.info}>
+          Zoom: {viewport.zoom.toFixed(2)}x
+          <br />
+          Pan: ({viewport.offsetX.toFixed(2)}, {viewport.offsetY.toFixed(2)})
+        </div>
       </div>
       
       <div style={styles.status}>
         WebGL Ready | {instanceCount} rectangles
+        <br />
+        <small>Drag to pan | Scroll to zoom</small>
       </div>
     </div>
   );
 }
 
 /**
- * Generate test transformation matrices.
+ * Generate test matrices with viewport transform.
  * MANDATE: Bounded loop, deterministic output.
  */
 function generateTestMatrices(
   count: number,
-  canvasWidth: number,
-  canvasHeight: number
+  viewport: ViewportState
 ): Float32Array {
-  // MANDATE: Bounds check
   const safeCount = Math.max(1, Math.min(count, MAX_INSTANCES));
   
   const FLOATS_PER_MATRIX = 9;
   const matrices = new Float32Array(safeCount * FLOATS_PER_MATRIX);
 
-  // Generate grid of rectangles
   const gridSize = Math.ceil(Math.sqrt(safeCount));
-  const cellWidth = canvasWidth / gridSize;
-  const cellHeight = canvasHeight / gridSize;
-  const rectSize = Math.min(cellWidth, cellHeight) * 0.8;
+  const worldSize = 10.0;
+  const spacing = worldSize / gridSize;
+  const rectSize = spacing * 0.7;
+  
+  const worldToNDC = 2.0 / worldSize;
 
-  // MANDATE: Bounded loop with static limit
   for (let i = 0; i < safeCount; i++) {
     const row = Math.floor(i / gridSize);
     const col = i % gridSize;
     
-    // Position in canvas space (-1 to 1)
-    const x = (col / gridSize) * 2 - 1 + (1 / gridSize);
-    const y = (row / gridSize) * 2 - 1 + (1 / gridSize);
+    const worldX = (col - gridSize / 2) * spacing + spacing / 2;
+    const worldY = (row - gridSize / 2) * spacing + spacing / 2;
     
-    // Scale to rect size
-    const scale = (rectSize / canvasWidth) * 2;
-    
-    // 3x3 transform matrix (scale + translate)
     const offset = i * FLOATS_PER_MATRIX;
-    matrices[offset + 0] = scale;  // m00
-    matrices[offset + 1] = 0;      // m01
-    matrices[offset + 2] = x;      // m02 (translate x)
-    matrices[offset + 3] = 0;      // m10
-    matrices[offset + 4] = scale;  // m11
-    matrices[offset + 5] = y;      // m12 (translate y)
-    matrices[offset + 6] = 0;      // m20
-    matrices[offset + 7] = 0;      // m21
-    matrices[offset + 8] = 1;      // m22
+    
+    // Apply viewport transform
+    const viewX = (worldX - viewport.offsetX) * viewport.zoom;
+    const viewY = (worldY - viewport.offsetY) * viewport.zoom;
+    
+    const ndcX = viewX * worldToNDC;
+    const ndcY = viewY * worldToNDC;
+    
+    const ndcSize = rectSize * viewport.zoom * worldToNDC;
+    
+    matrices[offset + 0] = ndcSize;
+    matrices[offset + 1] = 0;
+    matrices[offset + 2] = ndcX;
+    matrices[offset + 3] = 0;
+    matrices[offset + 4] = ndcSize;
+    matrices[offset + 5] = ndcY;
+    matrices[offset + 6] = 0;
+    matrices[offset + 7] = 0;
+    matrices[offset + 8] = 1;
   }
 
   return matrices;
 }
 
-// MANDATE: Deterministic styles
 const styles = {
   container: {
     position: 'relative' as const,
@@ -176,11 +272,13 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
     backgroundColor: '#f0f0f0',
+    cursor: 'grab',
   },
   canvas: {
     position: 'absolute' as const,
     top: 0,
     left: 0,
+    cursor: 'inherit',
   },
   error: {
     padding: '20px',
@@ -202,6 +300,11 @@ const styles = {
     width: '200px',
     marginTop: '5px',
   },
+  info: {
+    marginTop: '10px',
+    fontSize: '12px',
+    color: '#666',
+  },
   status: {
     position: 'absolute' as const,
     bottom: '10px',
@@ -212,5 +315,6 @@ const styles = {
     fontFamily: 'monospace',
     fontSize: '12px',
     borderRadius: '4px',
+    textAlign: 'right' as const,
   },
 };
