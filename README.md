@@ -110,4 +110,4 @@ MIT License - See LICENSE file
 
 ## Contributing
 
-Early-stage project. Contributions welcome once Phase 1.2 is complete.
+Early-stage project. Contributions welcome once Phase 1.2 is complete.# Simple Designer - A professional-grade, open-source design tool.
