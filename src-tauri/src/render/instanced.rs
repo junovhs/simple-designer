@@ -26,7 +26,7 @@ impl Renderer {
     /// MANDATE: ≤60 SLOC, all resources created.
     pub async fn new<W>(window: W) -> Result<Self, String>
     where
-        W: raw_window_handle::HasWindowHandle + raw_window_handle::HasDisplayHandle,
+        W: raw_window_handle::HasWindowHandle + raw_window_handle::HasDisplayHandle + Send + Sync,
     {
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
