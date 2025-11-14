@@ -21,3 +21,5 @@ rstar = "0.12"
 # GPU rendering
 wgpu = "23.0"
 pollster = "0.4"
+bytemuck = { version = "1.14", features = ["derive"] }
+raw-window-handle = "0.6"

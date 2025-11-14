@@ -2,7 +2,14 @@
 #![deny(warnings)]
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod batch_ops;
 mod commands;
+mod layer;
+mod layer_tree;
+mod render;
+mod shape;
+mod spatial_index;
+mod viewport;
 
 use tauri::Manager;
 
