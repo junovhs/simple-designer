@@ -86,7 +86,7 @@ impl SpatialIndex {
         let envelope = AABB::from_corners([min.x, min.y], [max.x, max.y]);
 
         self.tree
-            .locate_in_envelope(&envelope)
+            .locate_in_envelope_intersecting(&envelope)
             .map(|entry| entry.id)
             .collect()
     }
