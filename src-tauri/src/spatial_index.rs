@@ -10,7 +10,7 @@ pub type ShapeId = u64;
 
 /// Spatial entry for R-tree.
 /// MANDATE: Bounded data structure.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SpatialEntry {
     pub id: ShapeId,
     pub min: Vec2,

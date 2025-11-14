@@ -24,14 +24,17 @@ pub struct Renderer {
 impl Renderer {
     /// Initialize renderer.
     /// MANDATE: ≤60 SLOC, all resources created.
-    pub async fn new(window: &impl raw_window_handle::HasWindowHandle) -> Result<Self, String> {
+    pub async fn new<W>(window: W) -> Result<Self, String>
+    where
+        W: raw_window_handle::HasWindowHandle + raw_window_handle::HasDisplayHandle,
+    {
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends: wgpu::Backends::PRIMARY,
             ..Default::default()
         });
 
         let surface = instance
-            .create_surface(window.window_handle().map_err(|e| e.to_string())?)
+            .create_surface(window)
             .map_err(|e| e.to_string())?;
 
         let adapter = instance
@@ -56,10 +59,7 @@ impl Renderer {
             .await
             .map_err(|e| e.to_string())?;
 
-        let size = window
-            .window_handle()
-            .map_err(|e| e.to_string())?
-            .as_raw();
+        // MANDATE: Default window dimensions
         let width = 1200;
         let height = 800;
 
