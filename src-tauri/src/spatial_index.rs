@@ -94,8 +94,9 @@ impl SpatialIndex {
     /// Query shapes at point.
     /// MANDATE: ≤60 SLOC, bounded output.
     pub fn query_point(&self, point: Vec2) -> Vec<ShapeId> {
-        // Use tiny epsilon to ensure proper intersection with bounding boxes
-        const EPSILON: f32 = 0.0001;
+        // Use small epsilon to ensure proper intersection with bounding boxes
+        // R-tree intersection requires non-zero area for reliable queries
+        const EPSILON: f32 = 0.001;
         let min = Vec2::new(point.x - EPSILON, point.y - EPSILON);
         let max = Vec2::new(point.x + EPSILON, point.y + EPSILON);
 
