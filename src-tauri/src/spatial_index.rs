@@ -94,12 +94,12 @@ impl SpatialIndex {
     /// Query shapes at point.
     /// MANDATE: ≤60 SLOC, bounded output.
     pub fn query_point(&self, point: Vec2) -> Vec<ShapeId> {
-        let envelope = AABB::from_point([point.x, point.y]);
+        // Use tiny epsilon to ensure proper intersection with bounding boxes
+        const EPSILON: f32 = 0.0001;
+        let min = Vec2::new(point.x - EPSILON, point.y - EPSILON);
+        let max = Vec2::new(point.x + EPSILON, point.y + EPSILON);
 
-        self.tree
-            .locate_in_envelope(&envelope)
-            .map(|entry| entry.id)
-            .collect()
+        self.query_rect(min, max)
     }
 
     /// Insert entry.
