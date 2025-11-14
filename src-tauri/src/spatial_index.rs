@@ -203,13 +203,12 @@ mod tests {
         index.insert(SpatialEntry::new(1, Vec2::new(0.0, 0.0), Vec2::new(2.0, 2.0)));
         index.insert(SpatialEntry::new(2, Vec2::new(5.0, 5.0), Vec2::new(7.0, 7.0)));
 
-        // Query returns shapes containing the point in their envelope
-        // R-tree query_in_envelope checks if point is within bounding box
-        let results = index.query_rect(Vec2::new(1.0, 1.0), Vec2::new(1.0, 1.0));
+        // query_point uses AABB::from_point which creates zero-size envelope
+        let results = index.query_point(Vec2::new(1.0, 1.0));
         assert_eq!(results.len(), 1);
         assert_eq!(results[0], 1);
 
-        let results = index.query_rect(Vec2::new(10.0, 10.0), Vec2::new(10.0, 10.0));
+        let results = index.query_point(Vec2::new(10.0, 10.0));
         assert_eq!(results.len(), 0);
     }
 
