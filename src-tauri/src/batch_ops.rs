@@ -1,5 +1,6 @@
 // MANDATE: Batch operations for transforms
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use crate::layer::LayerId;
 use glam::Mat3;

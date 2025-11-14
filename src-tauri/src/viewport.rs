@@ -1,5 +1,6 @@
 // MANDATE: Viewport pan/zoom transforms
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use glam::{Mat3, Vec2};
 

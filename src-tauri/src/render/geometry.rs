@@ -1,5 +1,6 @@
 // MANDATE: Quad geometry for instanced rendering
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use wgpu::util::DeviceExt;
 

@@ -1,5 +1,6 @@
 // MANDATE: Shape definitions and material batching
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use crate::layer::LayerId;
 use crate::render::pipeline::InstanceData;

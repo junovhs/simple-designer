@@ -1,5 +1,6 @@
 // MANDATE: Instanced rendering logic
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use super::geometry::{create_index_buffer, create_vertex_buffer, QUAD_INDICES};
 use super::pipeline::{create_pipeline, create_shader, InstanceData};

@@ -1,5 +1,6 @@
 // MANDATE: Shader compilation and pipeline setup
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use super::geometry::Vertex;
 

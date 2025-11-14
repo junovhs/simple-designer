@@ -1,5 +1,6 @@
 // MANDATE: R-tree spatial indexing
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use glam::Vec2;
 use rstar::{RTree, RTreeObject, AABB};

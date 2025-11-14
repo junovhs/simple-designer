@@ -1,5 +1,6 @@
 // MANDATE: Layer hierarchy management
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use crate::layer::{Layer, LayerId};
 use std::collections::HashMap;

@@ -1,5 +1,6 @@
 // MANDATE: Layer metadata and properties
 #![deny(warnings)]
+#![allow(dead_code)]
 
 use glam::Mat3;
 use serde::{Deserialize, Serialize};
