@@ -1,6 +1,5 @@
 // MANDATE: Shape definitions and material batching
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use crate::layer::LayerId;
 use crate::render::pipeline::InstanceData;
@@ -170,5 +169,20 @@ mod tests {
         let groups = group_by_material(&shapes);
         assert_eq!(groups[0].len(), 1);
         assert_eq!(groups[1].len(), 1);
+    }
+
+    #[test]
+    fn test_set_color() {
+        let mut shape = Shape::new(1, 1, Vec2::ZERO, Vec2::ONE);
+        let color = Vec4::new(1.0, 0.0, 0.0, 1.0);
+        shape.set_color(color);
+        assert_eq!(shape.color, color);
+    }
+
+    #[test]
+    fn test_to_instance_data() {
+        let shape = Shape::new(1, 1, Vec2::new(10.0, 20.0), Vec2::new(5.0, 5.0));
+        let instance = shape.to_instance_data(Mat3::IDENTITY);
+        assert_eq!(instance.color, [1.0, 1.0, 1.0, 1.0]);
     }
 }

@@ -1,5 +1,6 @@
 // MANDATE: Shader compilation and pipeline setup
 #![deny(warnings)]
+// Public API: Functions used by renderer, tested via integration tests
 #![allow(dead_code)]
 
 use super::geometry::Vertex;

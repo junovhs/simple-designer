@@ -1,6 +1,5 @@
 // MANDATE: R-tree spatial indexing
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use glam::Vec2;
 use rstar::{RTree, RTreeObject, AABB};
@@ -180,5 +179,44 @@ mod tests {
         let removed = index.remove(1);
         assert!(removed);
         assert_eq!(index.len(), 0);
+    }
+
+    #[test]
+    fn test_spatial_index_build() {
+        let entries = vec![
+            SpatialEntry::new(1, Vec2::new(0.0, 0.0), Vec2::new(1.0, 1.0)),
+            SpatialEntry::new(2, Vec2::new(2.0, 2.0), Vec2::new(3.0, 3.0)),
+            SpatialEntry::new(3, Vec2::new(4.0, 4.0), Vec2::new(5.0, 5.0)),
+        ];
+
+        let index = SpatialIndex::build(entries);
+        assert_eq!(index.len(), 3);
+
+        let results = index.query_rect(Vec2::new(0.0, 0.0), Vec2::new(2.5, 2.5));
+        assert_eq!(results.len(), 2);
+    }
+
+    #[test]
+    fn test_spatial_index_query_point() {
+        let mut index = SpatialIndex::new();
+        index.insert(SpatialEntry::new(1, Vec2::new(0.0, 0.0), Vec2::new(2.0, 2.0)));
+        index.insert(SpatialEntry::new(2, Vec2::new(5.0, 5.0), Vec2::new(7.0, 7.0)));
+
+        let results = index.query_point(Vec2::new(1.0, 1.0));
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0], 1);
+
+        let results = index.query_point(Vec2::new(10.0, 10.0));
+        assert_eq!(results.len(), 0);
+    }
+
+    #[test]
+    fn test_spatial_index_is_empty() {
+        let index = SpatialIndex::new();
+        assert!(index.is_empty());
+
+        let mut index = SpatialIndex::new();
+        index.insert(SpatialEntry::new(1, Vec2::new(0.0, 0.0), Vec2::new(1.0, 1.0)));
+        assert!(!index.is_empty());
     }
 }

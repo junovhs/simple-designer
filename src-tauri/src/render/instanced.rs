@@ -1,5 +1,6 @@
 // MANDATE: Instanced rendering logic
 #![deny(warnings)]
+// Public API: Renderer requires wgpu device, tested via integration tests
 #![allow(dead_code)]
 
 use super::geometry::{create_index_buffer, create_vertex_buffer, QUAD_INDICES};

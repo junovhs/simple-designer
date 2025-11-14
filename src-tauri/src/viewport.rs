@@ -1,6 +1,5 @@
 // MANDATE: Viewport pan/zoom transforms
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use glam::{Mat3, Vec2};
 
@@ -145,5 +144,28 @@ mod tests {
 
         vp.zoom_at(0.001, 400.0, 300.0);
         assert_eq!(vp.zoom, MIN_ZOOM);
+    }
+
+    #[test]
+    fn test_world_to_screen() {
+        let vp = Viewport::new(800.0, 600.0);
+        let screen = vp.world_to_screen(0.0, 0.0);
+        assert_eq!(screen.x, 400.0);
+        assert_eq!(screen.y, 300.0);
+    }
+
+    #[test]
+    fn test_view_matrix() {
+        let vp = Viewport::new(800.0, 600.0);
+        let matrix = vp.view_matrix();
+        assert_eq!(matrix, Mat3::from_scale_angle_translation(Vec2::ONE, 0.0, Vec2::ZERO));
+    }
+
+    #[test]
+    fn test_visible_bounds() {
+        let vp = Viewport::new(800.0, 600.0);
+        let (min, max) = vp.visible_bounds();
+        assert!(min.x < max.x);
+        assert!(min.y < max.y);
     }
 }

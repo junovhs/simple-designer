@@ -1,6 +1,5 @@
 // MANDATE: Layer hierarchy management
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use crate::layer::{Layer, LayerId};
 use std::collections::HashMap;
@@ -168,5 +167,32 @@ mod tests {
 
         let result = tree.add_layer("Overflow".to_string());
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_get_renderable() {
+        let mut tree = LayerTree::new();
+        let id1 = tree.add_layer("Visible".to_string()).unwrap();
+        let id2 = tree.add_layer("Hidden".to_string()).unwrap();
+        let id3 = tree.add_layer("Transparent".to_string()).unwrap();
+
+        tree.get_layer_mut(id2).unwrap().set_visible(false);
+        tree.get_layer_mut(id3).unwrap().set_opacity(0.0);
+
+        let renderable = tree.get_renderable();
+        assert_eq!(renderable.len(), 1);
+        assert_eq!(renderable[0].id, id1);
+    }
+
+    #[test]
+    fn test_clear() {
+        let mut tree = LayerTree::new();
+        tree.add_layer("Layer 1".to_string()).unwrap();
+        tree.add_layer("Layer 2".to_string()).unwrap();
+        assert_eq!(tree.len(), 2);
+
+        tree.clear();
+        assert_eq!(tree.len(), 0);
+        assert!(tree.is_empty());
     }
 }

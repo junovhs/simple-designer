@@ -1,6 +1,5 @@
 // MANDATE: Layer metadata and properties
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use glam::Mat3;
 use serde::{Deserialize, Serialize};
@@ -120,5 +119,17 @@ mod tests {
         let mut layer = Layer::new(1, "Test".to_string());
         layer.set_z_order(10);
         assert_eq!(layer.z_order, 10);
+    }
+
+    #[test]
+    fn test_layer_set_transform() {
+        let mut layer = Layer::new(1, "Test".to_string());
+        let transform = Mat3::from_scale_angle_translation(
+            glam::Vec2::new(2.0, 2.0),
+            0.0,
+            glam::Vec2::new(10.0, 20.0),
+        );
+        layer.set_transform(transform);
+        assert_eq!(layer.transform, transform);
     }
 }

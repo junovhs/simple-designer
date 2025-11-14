@@ -1,6 +1,5 @@
 // MANDATE: Batch operations for transforms
 #![deny(warnings)]
-#![allow(dead_code)]
 
 use crate::layer::LayerId;
 use glam::Mat3;
@@ -204,5 +203,59 @@ mod tests {
 
         batch.clear();
         assert_eq!(batch.len(), 0);
+    }
+
+    #[test]
+    fn test_transform_batch_updates() {
+        let mut batch = TransformBatch::new();
+        batch.add(TransformUpdate::new(1, Mat3::IDENTITY)).unwrap();
+        batch.add(TransformUpdate::new(2, Mat3::IDENTITY)).unwrap();
+
+        let updates = batch.updates();
+        assert_eq!(updates.len(), 2);
+        assert_eq!(updates[0].id, 1);
+        assert_eq!(updates[1].id, 2);
+    }
+
+    #[test]
+    fn test_transform_batch_is_empty() {
+        let batch = TransformBatch::new();
+        assert!(batch.is_empty());
+
+        let mut batch = TransformBatch::new();
+        batch.add(TransformUpdate::new(1, Mat3::IDENTITY)).unwrap();
+        assert!(!batch.is_empty());
+    }
+
+    #[test]
+    fn test_opacity_batch_updates() {
+        let mut batch = OpacityBatch::new();
+        batch.add(OpacityUpdate::new(1, 0.5).unwrap()).unwrap();
+        batch.add(OpacityUpdate::new(2, 0.8).unwrap()).unwrap();
+
+        let updates = batch.updates();
+        assert_eq!(updates.len(), 2);
+        assert_eq!(updates[0].id, 1);
+    }
+
+    #[test]
+    fn test_opacity_batch_clear() {
+        let mut batch = OpacityBatch::new();
+        batch.add(OpacityUpdate::new(1, 0.5).unwrap()).unwrap();
+        assert_eq!(batch.len(), 1);
+
+        batch.clear();
+        assert_eq!(batch.len(), 0);
+        assert!(batch.is_empty());
+    }
+
+    #[test]
+    fn test_opacity_batch_is_empty() {
+        let batch = OpacityBatch::new();
+        assert!(batch.is_empty());
+
+        let mut batch = OpacityBatch::new();
+        batch.add(OpacityUpdate::new(1, 0.5).unwrap()).unwrap();
+        assert!(!batch.is_empty());
     }
 }

@@ -1,5 +1,6 @@
 // MANDATE: Quad geometry for instanced rendering
 #![deny(warnings)]
+// Public API: Functions used by renderer, tested via integration tests
 #![allow(dead_code)]
 
 use wgpu::util::DeviceExt;
